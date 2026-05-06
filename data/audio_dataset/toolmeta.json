@@ -1,0 +1,714 @@
+{
+    "nisqa": {
+        "name": "nisqa",
+        "description": "Assess speech quality and get a Mean Opinion Score (MOS) using NISQA neural network. Use for evaluating synthesized speech, codec quality, or audio degradation.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to evaluate",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "text",
+                "name": "mode",
+                "description": "Prediction mode (default: predict_file)",
+                "optional": true,
+                "default": "predict_file"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "float",
+                "name": "mos",
+                "description": "Mean Opinion Score (1.0-5.0 scale). Higher is better quality."
+            },
+            {
+                "type": "object",
+                "name": "subscores",
+                "description": "Detailed subscores: noisiness, discontinuity, coloration, loudness"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "speechmos": {
+        "name": "speechmos",
+        "description": "Predict Mean Opinion Score (MOS) for speech quality using Microsoft SpeechMOS model.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to evaluate",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "float",
+                "name": "mos",
+                "description": "Predicted MOS score (1.0-5.0)"
+            },
+            {
+                "type": "object",
+                "name": "details",
+                "description": "Additional quality metrics"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "deepfake_audio": {
+        "name": "deepfake_audio",
+        "description": "Detect if audio is real or AI-generated/deepfake. Use for authenticity verification, spoofing detection, and identifying synthetic speech.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to analyze for deepfake detection",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "prediction",
+                "description": "Classification result: 'real' or 'fake'"
+            },
+            {
+                "type": "bool",
+                "name": "is_deepfake",
+                "description": "Boolean flag: true if audio is detected as fake/synthetic"
+            },
+            {
+                "type": "float",
+                "name": "confidence",
+                "description": "Confidence score (0.0-1.0) for the prediction"
+            },
+            {
+                "type": "object",
+                "name": "raw_scores",
+                "description": "Detailed scores: {real: probability, fake: probability}"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "audioseal": {
+        "name": "audioseal",
+        "description": "Detect and decode audio watermarks embedded by AudioSeal. Use for verifying AI-generated audio provenance.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to check for watermarks",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "bool",
+                "name": "has_watermark",
+                "description": "Whether a watermark was detected"
+            },
+            {
+                "type": "float",
+                "name": "detection_score",
+                "description": "Watermark detection confidence (0.0-1.0)"
+            },
+            {
+                "type": "text",
+                "name": "message",
+                "description": "Decoded watermark message if present"
+            }
+        ],
+        "category": "Detection"
+    },
+    "silero_vad": {
+        "name": "silero_vad",
+        "description": "Detect voice activity (speech segments) in audio using Silero VAD model. Returns timestamps of speech regions.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to analyze",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "float",
+                "name": "threshold",
+                "description": "Speech detection threshold (0.0-1.0, default: 0.5)",
+                "optional": true,
+                "default": 0.5
+            },
+            {
+                "type": "int",
+                "name": "min_speech_ms",
+                "description": "Minimum speech segment duration in ms (default: 250)",
+                "optional": true,
+                "default": 250
+            },
+            {
+                "type": "int",
+                "name": "min_silence_ms",
+                "description": "Minimum silence gap to split segments in ms (default: 150)",
+                "optional": true,
+                "default": 150
+            }
+        ],
+        "outputs": [
+            {
+                "type": "array",
+                "name": "speech_segments",
+                "description": "List of detected speech segments: [{start: sec, end: sec}, ...]"
+            },
+            {
+                "type": "int",
+                "name": "num_segments",
+                "description": "Number of detected speech segments"
+            },
+            {
+                "type": "float",
+                "name": "total_speech_sec",
+                "description": "Total duration of speech in seconds"
+            },
+            {
+                "type": "float",
+                "name": "speech_ratio",
+                "description": "Ratio of speech to total audio duration (0.0-1.0)"
+            }
+        ],
+        "category": "Perception"
+    },
+    "language_id": {
+        "name": "language_id",
+        "description": "Identify the spoken language in an audio file. Supports 107 languages including English, Spanish, French, German, Chinese, Japanese, Arabic, Hindi.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to analyze",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "int",
+                "name": "top_k",
+                "description": "Number of top language predictions to return (default: 3)",
+                "optional": true,
+                "default": 3
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "detected_language",
+                "description": "ISO language code of the detected language (e.g., 'en', 'es', 'zh')"
+            },
+            {
+                "type": "text",
+                "name": "detected_language_name",
+                "description": "Full name of the detected language"
+            },
+            {
+                "type": "float",
+                "name": "confidence",
+                "description": "Confidence score for the top prediction"
+            },
+            {
+                "type": "array",
+                "name": "top_predictions",
+                "description": "List of top-k language predictions with scores"
+            }
+        ],
+        "category": "Perception"
+    },
+    "gender_detection": {
+        "name": "gender_detection",
+        "description": "Detect the gender of speaker(s) in an audio file. Returns male/female classification with confidence scores.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to analyze",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "gender",
+                "description": "Detected gender: 'male' or 'female'"
+            },
+            {
+                "type": "float",
+                "name": "confidence",
+                "description": "Confidence score (0.0-1.0)"
+            },
+            {
+                "type": "object",
+                "name": "scores",
+                "description": "Detailed scores: {male: probability, female: probability}"
+            }
+        ],
+        "category": "Perception"
+    },
+    "whisper": {
+        "name": "whisper",
+        "description": "Transcribe speech to text using OpenAI Whisper model. Supports multiple languages and automatic language detection.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to transcribe",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "int",
+                "name": "beam_size",
+                "description": "Beam size for decoding (default: 5)",
+                "optional": true,
+                "default": 5
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "text",
+                "description": "Transcribed text from the audio"
+            },
+            {
+                "type": "text",
+                "name": "language",
+                "description": "Detected language code"
+            }
+        ],
+        "category": "Perception"
+    },
+    "funasr": {
+        "name": "funasr",
+        "description": "Transcribe speech using FunASR (Alibaba). Supports Chinese, English, and multilingual transcription with punctuation.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to transcribe",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "text",
+                "description": "Transcribed text with punctuation"
+            },
+            {
+                "type": "array",
+                "name": "segments",
+                "description": "Word-level timestamps if available"
+            }
+        ],
+        "category": "Perception"
+    },
+    "audio_caption": {
+        "name": "audio_caption",
+        "description": "Generate natural language caption describing audio content using audio-language models.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to caption",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "caption",
+                "description": "Natural language description of the audio content"
+            }
+        ],
+        "category": "Perception"
+    },
+    "sb_sgmse": {
+        "name": "sb_sgmse",
+        "description": "Speech enhancement using SpeechBrain's SGMSE implementation. Diffusion-based enhancement.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the degraded audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "audio",
+                "name": "enhanced_path",
+                "description": "Path to the enhanced audio file"
+            }
+        ],
+        "category": "Transformation"
+    },
+    "deepfilternet": {
+        "name": "deepfilternet",
+        "description": "Remove noise and enhance speech quality using DeepFilterNet neural network. Best for speech enhancement and noise suppression.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the noisy audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "audio",
+                "name": "enhanced_audio_path",
+                "description": "Path to the enhanced/denoised audio file"
+            }
+        ],
+        "category": "Transformation"
+    },
+    "espnet_enhance": {
+        "name": "espnet_enhance",
+        "description": "Enhance speech using ESPnet speech enhancement models. Supports various enhancement architectures.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the noisy audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "audio",
+                "name": "enhanced_path",
+                "description": "Path to the enhanced audio file"
+            }
+        ],
+        "category": "Transformation"
+    },
+    "demucs": {
+        "name": "demucs",
+        "description": "Separate audio into 4 stems: vocals, drums, bass, and other instruments using Meta's Demucs model.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to separate",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "text",
+                "name": "model_name",
+                "description": "Model to use (default: htdemucs)",
+                "optional": true,
+                "default": "htdemucs"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "object",
+                "name": "stems",
+                "description": "Dictionary of separated audio paths: {vocals, drums, bass, other}"
+            },
+            {
+                "type": "text",
+                "name": "output_dir",
+                "description": "Directory containing the separated stems"
+            }
+        ],
+        "category": "Transformation"
+    },
+    "sepformer_wham": {
+        "name": "sepformer_wham",
+        "description": "Separate noisy mixed speech using SepFormer trained on WHAM! dataset. Handles speech + noise.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the noisy mixed audio",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "array",
+                "name": "separated_paths",
+                "description": "Paths to separated audio files"
+            },
+            {
+                "type": "int",
+                "name": "num_sources",
+                "description": "Number of separated sources"
+            }
+        ],
+        "category": "Transformation"
+    },
+    "diarizen": {
+        "name": "diarizen",
+        "description": "Perform speaker diarization - identify who spoke when in multi-speaker audio using Diarizen.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the multi-speaker audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "array",
+                "name": "segments",
+                "description": "List of speaker segments: [{speaker: id, start: sec, end: sec}, ...]"
+            },
+            {
+                "type": "int",
+                "name": "num_speakers",
+                "description": "Number of unique speakers detected"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "resemblyzer": {
+        "name": "resemblyzer",
+        "description": "Extract speaker embeddings using Resemblyzer (d-vector). Use for speaker clustering and voice matching.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "array",
+                "name": "embedding",
+                "description": "256-dimensional speaker embedding vector"
+            },
+            {
+                "type": "float",
+                "name": "duration",
+                "description": "Processed audio duration"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "speaker_verification": {
+        "name": "speaker_verification",
+        "description": "Verify if two audio segments are from the same speaker, or extract speaker embeddings using ECAPA-TDNN.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path_1",
+                "description": "Path to the first audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "audio",
+                "name": "audio_path_2",
+                "description": "Path to the second audio file (for verification)",
+                "optional": true,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "text",
+                "name": "task",
+                "description": "Task type: 'verify' (compare two audios) or 'embed' (extract embeddings)",
+                "optional": true,
+                "default": "verify"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "bool",
+                "name": "same_speaker",
+                "description": "Boolean: true if both audios are from the same speaker (verify mode)"
+            },
+            {
+                "type": "float",
+                "name": "confidence_score",
+                "description": "Similarity/confidence score for verification"
+            },
+            {
+                "type": "int",
+                "name": "embedding_dim",
+                "description": "Dimension of speaker embedding (embed mode, typically 192)"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "clap_embed": {
+        "name": "clap_embed",
+        "description": "Extract audio embeddings using CLAP (Contrastive Language-Audio Pretraining). Useful for audio-text similarity.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "array",
+                "name": "embedding",
+                "description": "512-dimensional CLAP audio embedding"
+            },
+            {
+                "type": "text",
+                "name": "model",
+                "description": "CLAP model version used"
+            }
+        ],
+        "category": "Detection"
+    },
+    "r1_aqa": {
+        "name": "r1_aqa",
+        "description": "Answer questions about audio using R1-AQA audio question-answering model.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "text",
+                "name": "question",
+                "description": "Question to answer about the audio",
+                "optional": false
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "answer",
+                "description": "Answer to the question about the audio"
+            }
+        ],
+        "category": "Detection"
+    },
+    "chromaprint": {
+        "name": "chromaprint",
+        "description": "Generate acoustic fingerprint using Chromaprint/AcoustID. Use for audio identification and duplicate detection.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to fingerprint",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "fingerprint",
+                "description": "Base64-encoded acoustic fingerprint"
+            },
+            {
+                "type": "float",
+                "name": "duration",
+                "description": "Audio duration in seconds"
+            }
+        ],
+        "category": "Detection"
+    },
+    "desta25": {
+        "name": "desta25",
+        "description": "Analyze audio content using DeSTA2.5-Audio-Llama model via OpenAI-compatible endpoint.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to analyze",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            },
+            {
+                "type": "text",
+                "name": "prompt",
+                "description": "Question or prompt for the audio analysis",
+                "optional": false
+            }
+        ],
+        "outputs": [
+            {
+                "type": "text",
+                "name": "result",
+                "description": "Analysis result text from DeSTA2.5"
+            }
+        ],
+        "category": "Analysis"
+    },
+    "wav2vec2_quality": {
+        "name": "wav2vec2_quality",
+        "description": "Reference-free audio quality assessment using Wav2Vec2 embeddings. Analyzes energy variance in latent feature space to detect synthesis artifacts.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to evaluate",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "float",
+                "name": "quality_score",
+                "description": "Quality score (0-1 scale, higher is better)"
+            },
+            {
+                "type": "object",
+                "name": "metrics",
+                "description": "Detailed quality metrics including stability and consistency"
+            }
+        ]
+    },
+    "audioldm_eval": {
+        "name": "audioldm_eval",
+        "description": "Detect generative artifacts using AudioLDM evaluation metrics. Computes Frechet Audio Distance (FAD), KL-Divergence, and CLAP similarity.",
+        "inputs": [
+            {
+                "type": "audio",
+                "name": "audio_path",
+                "description": "Path to the audio file to evaluate",
+                "optional": false,
+                "filetype": "wav,mp3,flac"
+            }
+        ],
+        "outputs": [
+            {
+                "type": "float",
+                "name": "fad_score",
+                "description": "Frechet Audio Distance - lower is more natural"
+            },
+            {
+                "type": "object",
+                "name": "metrics",
+                "description": "All evaluation metrics including FAD, KL, CLAP similarity"
+            }
+        ]
+    }
+}

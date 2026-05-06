@@ -1,0 +1,15 @@
+name,type,likely_runner_family
+Voxtral-Small-24B-2507,audio_llm,generic_auto
+LLaMA-Omni2-14B,audio_llm,generic_auto
+Qwen2-Audio-7B-Instruct,audio_llm,qwen2_audio
+Llama-3.1-8B-Omni,audio_llm,generic_auto
+LLaMA-Omni2-7B,audio_llm,generic_auto
+DeepSeek-R1-Distill-Qwen-7B,text_llm,generic_auto
+Qwen2.5-Omni-7B,audio_llm,qwen25_omni
+LLaMA-Omni2-3B,audio_llm,generic_auto
+glm-4-voice-9b,audio_llm,generic_auto
+Audio-Flamingo-3,multimodal_llm,generic_auto
+Qwen2-Audio-7B,audio_llm,qwen2_audio
+SeaLLMs-Audio-7B,audio_llm,generic_auto
+Step-Audio-EditX,audio_edit_model,generic_auto
+Kimi-Audio-7B-Instruct,audio_llm,kimi_audio

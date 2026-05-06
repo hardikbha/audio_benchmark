@@ -1,0 +1,4 @@
+name,type,likely_runner_family,api_base,api_model,size
+gpt-4o,text_llm,generic_auto,http://LOGIN_NODE:4000/v1,gpt-4o,--
+gpt-4.1-mini,text_llm,generic_auto,http://LOGIN_NODE:4000/v1,gpt-4.1-mini,--
+o3-mini,text_llm,generic_auto,http://LOGIN_NODE:4000/v1,o3-mini,--

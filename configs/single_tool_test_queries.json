@@ -1,0 +1,1551 @@
+{
+    "deepfake_audio": {
+        "tools": [
+            {
+                "name": "deepfake_audio",
+                "description": "Detects if audio is real or AI-generated/spoofed using SSL-based wav2vec 2.0 model.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to analyze",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "text",
+                        "name": null,
+                        "description": "Prediction (real/fake) with confidence score and detailed probabilities"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Is this audio recording genuine or artificially generated?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to analyze this audio for signs of AI generation or spoofing using the deepfake detection tool.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "deepfake_audio",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "real"
+                ],
+                [
+                    "bonafide"
+                ],
+                [
+                    "genuine"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "fake"
+                ],
+                [
+                    "spoof"
+                ],
+                [
+                    "synthetic"
+                ]
+            ]
+        }
+    },
+    "whisper": {
+        "tools": [
+            {
+                "name": "whisper",
+                "description": "Transcribe speech using an offline Whisper model (faster-whisper implementation).",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to transcribe",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "beam_size",
+                        "description": "Beam size for decoding (default: 5)",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "text",
+                        "name": "text",
+                        "description": "Transcribed text from the audio"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "What is being said in this audio recording?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to transcribe the speech content using the Whisper ASR tool.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "whisper",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "text"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "nisqa": {
+        "tools": [
+            {
+                "name": "nisqa",
+                "description": "Assess speech quality and get a Mean Opinion Score (MOS) using NISQA.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to evaluate",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Quality scores including MOS, noisiness, coloration, discontinuity, and loudness"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "How would you rate the quality of this speech recording?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to assess the speech quality using NISQA to get MOS and other quality metrics.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "nisqa",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "mos"
+                ],
+                [
+                    "quality"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "silero_vad": {
+        "tools": [
+            {
+                "name": "silero_vad",
+                "description": "Detect speech segments in audio using Silero Voice Activity Detection.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Speech segments with timestamps and total speech duration"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "When is someone speaking in this audio?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to detect speech segments and their timestamps using VAD.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "silero_vad",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "segments"
+                ],
+                [
+                    "speech"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "language_id": {
+        "tools": [
+            {
+                "name": "language_id",
+                "description": "Identify the spoken language in audio using wav2vec2-based language identification.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Detected language with confidence score"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "What language is the speaker using in this audio?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to identify the spoken language using the language identification tool.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "language_id",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "language"
+                ],
+                [
+                    "english"
+                ],
+                [
+                    "en"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "diarizen": {
+        "tools": [
+            {
+                "name": "diarizen",
+                "description": "Perform speaker diarization to identify who spoke when in the audio.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "num_speakers",
+                        "description": "Expected number of speakers",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Speaker segments with timestamps and speaker labels"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "How many different people are talking in this recording and when?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to perform speaker diarization to identify different speakers and their speaking times.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "diarizen",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "speaker"
+                ],
+                [
+                    "segments"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "speaker_verification": {
+        "tools": [
+            {
+                "name": "speaker_verification",
+                "description": "Verify if two audio samples are from the same speaker using SpeechBrain embeddings.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path_1",
+                        "description": "Path to first audio file",
+                        "required": true
+                    },
+                    {
+                        "type": "audio",
+                        "name": "audio_path_2",
+                        "description": "Path to second audio file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Similarity score and same_speaker boolean"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Are these two voice samples from the same person?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to compare speaker embeddings to verify if both samples are from the same speaker.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "speaker_verification",
+                            "arguments": {
+                                "audio_path_1": "AudioToolAgent/testing_data/ami_meeting_sample.wav",
+                                "audio_path_2": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "same_speaker"
+                ],
+                [
+                    "similarity"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "demucs": {
+        "tools": [
+            {
+                "name": "demucs",
+                "description": "Separate music into vocals, drums, bass, and other using HTDemucs model.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the music file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Paths to separated stems (vocals, drums, bass, other)"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Can you extract just the vocals from this audio?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to use music source separation to isolate the vocal track.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "demucs",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "vocals"
+                ],
+                [
+                    "stems"
+                ],
+                [
+                    "separated"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "deepfilternet": {
+        "tools": [
+            {
+                "name": "deepfilternet",
+                "description": "Remove background noise and enhance speech using DeepFilterNet.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the noisy audio file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Path to enhanced/denoised audio file"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Clean up the background noise in this recording."
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to apply noise suppression and speech enhancement to improve audio quality.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "deepfilternet",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "enhanced"
+                ],
+                [
+                    "denoised"
+                ],
+                [
+                    "output"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "chromaprint": {
+        "tools": [
+            {
+                "name": "chromaprint",
+                "description": "Generate audio fingerprint for identification and duplicate detection using Chromaprint.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Audio fingerprint hash and duration"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Generate an identifier for this audio clip."
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to create an audio fingerprint that uniquely identifies this recording.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "chromaprint",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "fingerprint"
+                ],
+                [
+                    "duration"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "sepformer_wham": {
+        "tools": [
+            {
+                "name": "sepformer_wham",
+                "description": "Separate overlapping speakers using SepFormer speech separation model.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the mixed speech audio",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Paths to separated speaker audio files"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Separate the overlapping voices in this recording."
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to use speech separation to isolate individual speakers from mixed audio.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "sepformer_wham",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "separated"
+                ],
+                [
+                    "sources"
+                ],
+                [
+                    "speaker"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "audioseal": {
+        "tools": [
+            {
+                "name": "audioseal",
+                "description": "Detect audio watermarks for deepfake localization.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to analyze for watermark detection",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "name": "threshold",
+                        "description": "Detection threshold (0-1). Default 0.5.",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Watermark probability and frame-level detection"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Does this audio contain any hidden watermarks?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I should use the AudioSeal tool to check for watermarks that might indicate AI generation.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "audioseal",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "watermark"
+                ],
+                [
+                    "probability"
+                ],
+                [
+                    "clean"
+                ],
+                [
+                    "contains"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "resemblyzer": {
+        "tools": [
+            {
+                "name": "resemblyzer",
+                "description": "Analyze speaker voice embeddings/d-vectors for speaker verification.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "target_audio",
+                        "description": "Path to the main audio file to analyze",
+                        "required": true
+                    },
+                    {
+                        "type": "audio",
+                        "name": "reference_audio",
+                        "description": "Path to reference audio of the claimed speaker",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Embedding dimensions or similarity score"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Verify if the speaker in this clip matches the reference using d-vectors."
+            },
+            {
+                "role": "assistant",
+                "thought": "I will use Resemblyzer to extract speaker embeddings and compare them.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "resemblyzer",
+                            "arguments": {
+                                "target_audio": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "embedding"
+                ],
+                [
+                    "similarity"
+                ],
+                [
+                    "speaker"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "wav2vec2_quality": {
+        "tools": [
+            {
+                "name": "wav2vec2_quality",
+                "description": "Assess speech quality (reference-free) using Wav2Vec2 embeddings.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to assess",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Quality score and embedding energy stats"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Check the stability and quality of the speech representations in this file."
+            },
+            {
+                "role": "assistant",
+                "thought": "I'll use the Wav2Vec2 quality tool to inspect the stability of the learned representations.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "wav2vec2_quality",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "quality"
+                ],
+                [
+                    "score"
+                ],
+                [
+                    "energy"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "speechmos": {
+        "tools": [
+            {
+                "name": "speechmos",
+                "description": "Predict Mean Opinion Score (MOS 1-5) for speech quality assessment.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to assess",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "MOS prediction"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Give me a MOS prediction for this speech file."
+            },
+            {
+                "role": "assistant",
+                "thought": "I will use the SpeechMOS tool to predict the subjective quality score.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "speechmos",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "mos"
+                ],
+                [
+                    "quality"
+                ],
+                [
+                    "score"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "pyannote_segmentation": {
+        "tools": [
+            {
+                "name": "pyannote_segmentation",
+                "description": "Detect speaker changes and segment audio by speaker.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to analyze",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "num_speakers",
+                        "description": "Expected number of speakers",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Speaker segments and count"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Segment this audio by speaker changes."
+            },
+            {
+                "role": "assistant",
+                "thought": "I will run PyAnnote segmentation to find speaker turns.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "pyannote_segmentation",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "segments"
+                ],
+                [
+                    "speaker"
+                ],
+                [
+                    "num_speakers"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "espnet_enhance": {
+        "tools": [
+            {
+                "name": "espnet_enhance",
+                "description": "Enhance speech quality by removing noise and reverberation (ESPnet SE).",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the noisy audio file",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Path to enhanced audio file"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Enhance this recording using ESPnet to remove noise."
+            },
+            {
+                "role": "assistant",
+                "thought": "I'll apply ESPnet's speech enhancement model to improve the audio.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "espnet_enhance",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "enhanced"
+                ],
+                [
+                    "output"
+                ],
+                [
+                    "success"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "asteroid_separate": {
+        "tools": [
+            {
+                "name": "asteroid_separate",
+                "description": "Separate mixed audio into individual sources (Asteroid ConvTasNet).",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the mixed audio file",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "num_sources",
+                        "description": "Number of sources to separate (default: 2)",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Paths to separated source files"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Use Asteroid to separate the sources in this mix."
+            },
+            {
+                "role": "assistant",
+                "thought": "I will use Asteroid's ConvTasNet to separate the audio sources.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "asteroid_separate",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "separated"
+                ],
+                [
+                    "sources"
+                ],
+                [
+                    "output"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "audioldm_eval": {
+        "tools": [
+            {
+                "name": "audioldm_eval",
+                "description": "Compute audio quality metrics (FAD, KL) to detect generative artifacts.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "generated_audio",
+                        "description": "Path to the audio to evaluate",
+                        "required": true
+                    },
+                    {
+                        "type": "audio",
+                        "name": "reference_audio",
+                        "description": "Path to reference audio",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Evaluation metrics (FAD, etc.)"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Evaluate this audio for generative artifacts using FAD metrics."
+            },
+            {
+                "role": "assistant",
+                "thought": "I'll use the AudioLDM evaluation tool to check for quality metrics like FAD.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "audioldm_eval",
+                            "arguments": {
+                                "generated_audio": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "fad"
+                ],
+                [
+                    "metrics"
+                ],
+                [
+                    "score"
+                ],
+                [
+                    "energy"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "funasr": {
+        "tools": [
+            {
+                "name": "funasr",
+                "description": "Transcribe speech using industrial-grade FunASR.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file",
+                        "required": true
+                    },
+                    {
+                        "type": "text",
+                        "name": "task",
+                        "description": "'asr' or 'vad'",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Transcription or VAD segments"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Transcribe this audio using FunASR."
+            },
+            {
+                "role": "assistant",
+                "thought": "I will use FunASR to get a robust transcription.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "funasr",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav",
+                                "task": "asr"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "transcription"
+                ],
+                [
+                    "text"
+                ],
+                [
+                    "asr"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "conette": {
+        "tools": [
+            {
+                "name": "conette",
+                "description": "Generate natural language captions for audio using CoNeTTE.",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the input audio file",
+                        "required": true
+                    },
+                    {
+                        "type": "text",
+                        "name": "task",
+                        "description": "'clotho' or 'audiocaps'",
+                        "required": false
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Generated caption"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "Describe what you hear in this audio file."
+            },
+            {
+                "role": "assistant",
+                "thought": "I will use the CoNeTTE tool to generate a descriptive caption for the audio.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "conette",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "caption"
+                ],
+                [
+                    "conette"
+                ],
+                [
+                    "text"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "error"
+                ]
+            ]
+        }
+    },
+    "gender_detection": {
+        "tools": [
+            {
+                "name": "gender_detection",
+                "description": "Detect the gender of the speaker in an audio recording (male/female).",
+                "inputs": [
+                    {
+                        "type": "audio",
+                        "name": "audio_path",
+                        "description": "Path to the audio file to analyze",
+                        "required": true
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "object",
+                        "name": null,
+                        "description": "Gender prediction with probabilities"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "type": "audio",
+                "path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+            }
+        ],
+        "dialogs": [
+            {
+                "role": "user",
+                "content": "What is the gender of the speaker in this audio?"
+            },
+            {
+                "role": "assistant",
+                "thought": "I need to identify the gender of the speaker using the gender detection tool.",
+                "tool_calls": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "gender_detection",
+                            "arguments": {
+                                "audio_path": "AudioToolAgent/testing_data/ami_meeting_sample.wav"
+                            }
+                        }
+                    }
+                ]
+            }
+        ],
+        "gt_answer": {
+            "whitelist": [
+                [
+                    "male"
+                ],
+                [
+                    "gender"
+                ]
+            ],
+            "blacklist": [
+                [
+                    "female"
+                ],
+                [
+                    "error"
+                ]
+            ]
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "file": {
+        "original_path": "${BENCHMARK_ROOT}",
+        "relative_path": "testing_data/file10952.wav_16k.wav_norm.wav_mono.wav_silence.wav_2sec.wav",
+        "sha256": "8baf1d1a9b48769bafca28a6a208ad4054d5b3069bb3af2fa122a64a123273b7",
+        "sample_rate_hz": 16000,
+        "channels": 1,
+        "duration_sec": 2.0,
+        "num_samples": 32000
+    },
+    "query_ground_truth": {
+        "final_answer_format": "compact_json_no_spaces",
+        "expected_answer_compact_json": "{\"content_class\":\"tonal_bursts\",\"active_events_ge_50ms\":9,\"event_density_per_sec\":4.5,\"median_gap_ms\":50,\"silence_ratio\":0.39,\"longest_event_ms\":325,\"domfreq_longest_hz\":113,\"speech_like_segments_ge_250ms\":0,\"tonal_fraction\":1.0,\"snr_proxy_db\":13.23,\"deepfake_score_if_applicable\":null,\"watermark_present_if_applicable\":null,\"clip_flag\":false}",
+        "min_tool_calls_expected": 4,
+        "suggested_tools": [
+            "espnet_enhance",
+            "silero_vad",
+            "funasr",
+            "language_id",
+            "speechmos",
+            "deepfake_audio",
+            "audioseal"
+        ],
+        "whitelist": [
+            [
+                "tonal_bursts"
+            ],
+            [
+                "active_events_ge_50ms",
+                "9"
+            ],
+            [
+                "event_density_per_sec",
+                "4.5"
+            ],
+            [
+                "speech_like_segments_ge_250ms",
+                "0"
+            ]
+        ],
+        "blacklist": [
+            [
+                "speech_or_mixed"
+            ],
+            [
+                "deepfake_score_if_applicable\":0"
+            ]
+        ]
+    },
+    "inferred_content": {
+        "speech_like_segments_ge_250ms": 0,
+        "content_class": "tonal_bursts",
+        "notes": [
+            "A long active region exists (325 ms) but remains strongly tonal (flatness<<0.12), so it fails the broadband speech gate.",
+            "Under the query's conditional rule, deepfake and watermark fields must be null."
+        ]
+    }
+}

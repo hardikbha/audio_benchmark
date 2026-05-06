@@ -1,0 +1,39 @@
+{
+  "queries": [
+    {
+      "id": "q001",
+      "audio_path": "${BENCHMARK_ROOT}",
+      "query": "Is this audio a deepfake or real?",
+      "expected_tools": ["deepfake_audio"],
+      "gold_answer": "Real"
+    },
+    {
+      "id": "q002",
+      "audio_path": "${BENCHMARK_ROOT}",
+      "query": "What language is being spoken in this audio?",
+      "expected_tools": ["language_id"],
+      "gold_answer": "English"
+    },
+    {
+      "id": "q003",
+      "audio_path": "${BENCHMARK_ROOT}",
+      "query": "Transcribe the speech in this audio file.",
+      "expected_tools": ["whisper"],
+      "gold_answer": "Transcription of the speech content."
+    },
+    {
+      "id": "q004",
+      "audio_path": "${BENCHMARK_ROOT}",
+      "query": "How many speakers are in this audio?",
+      "expected_tools": ["diarizen"],
+      "gold_answer": "1 speaker"
+    },
+    {
+      "id": "q005",
+      "audio_path": "${BENCHMARK_ROOT}",
+      "query": "Check if this audio is a deepfake and then transcribe what is being said.",
+      "expected_tools": ["deepfake_audio", "whisper"],
+      "gold_answer": "Real audio. Transcription: ..."
+    }
+  ]
+}
